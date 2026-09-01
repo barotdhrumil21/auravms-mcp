@@ -73,7 +73,8 @@ claude mcp add auravms -e AVMS_API_KEY=avms_... -- npx auravms-mcp
 
 - Rate limits are enforced server-side (60 req/min free, 300 req/min Pro); the server backs off automatically on 429.
 - Every tool response links back to [app.auravms.com](https://app.auravms.com) so a human can take over in the UI at any point.
-- Prefer workflow guidance too? The [procurement-rfq skill](https://github.com/dann26parr69/procurement-rfq-skill) teaches agents the full RFQ methodology (specs, normalization, weighted scoring, red flags) and pairs well with this server.
+- Prefer reusable agent guidance too? This repository includes the [AuraVMS procurement skill](skills/auravms-procurement/SKILL.md), which covers safe supplier, RFQ, quotation, reminder, and purchase-order workflows.
+- Install the skill with `npx skills add dann26parr69/auravms-mcp`.
 
 ## Why AuraVMS underneath
 
