@@ -1,0 +1,38 @@
+{
+  "name": "auravms-mcp",
+  "version": "0.1.2",
+  "description": "Guarded AuraVMS procurement workflows for RFQs, suppliers, quotations, reminders, and purchase orders.",
+  "author": {
+    "name": "Dhrumil Barot",
+    "email": "dhrumil@auravms.com",
+    "url": "https://www.auravms.com"
+  },
+  "homepage": "https://www.auravms.com/agents",
+  "repository": "https://github.com/barotdhrumil21/auravms-mcp",
+  "license": "MIT",
+  "keywords": [
+    "procurement",
+    "rfq",
+    "suppliers",
+    "mcp",
+    "agent"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "AuraVMS Procurement",
+    "shortDescription": "Run guarded RFQ and supplier quotation workflows.",
+    "longDescription": "Adds the AuraVMS procurement skill and MCP server for supplier discovery, draft RFQs, quotation comparison, reminders, awards, and RFQ closure.",
+    "developerName": "AuraVMS",
+    "category": "Productivity",
+    "capabilities": [
+      "Read suppliers, RFQs, and quotations",
+      "Draft and send confirmed RFQs",
+      "Compare quotes and place confirmed orders"
+    ],
+    "websiteURL": "https://www.auravms.com",
+    "privacyPolicyURL": "https://www.auravms.com/privacy-policy",
+    "termsOfServiceURL": "https://www.auravms.com/terms-conditions",
+    "defaultPrompt": "Use AuraVMS to run this procurement task. Inspect records first and confirm before contacting suppliers or placing orders."
+  },
+  "mcpServers": "./.mcp.json"
+}

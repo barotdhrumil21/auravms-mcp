@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "auravms": {
+      "command": "npx",
+      "args": ["-y", "auravms-mcp"],
+      "startup_timeout_sec": 30,
+      "tool_timeout_sec": 60
+    }
+  }
+}
