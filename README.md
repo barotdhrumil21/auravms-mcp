@@ -82,7 +82,8 @@ The default branch is an agent-ready integration repository:
 
 - [AGENTS.md](AGENTS.md) defines repository-wide safety and verification rules.
 - [The AuraVMS procurement skill](skills/auravms-procurement/SKILL.md) provides reusable workflow instructions.
-- [The Codex plugin manifest](.codex-plugin/plugin.json) bundles that skill with the published `auravms-mcp` server.
+- [The portable Agent Plugins manifest](plugin.json) bundles the skill with the remote AuraVMS MCP server.
+- [The Codex plugin manifest](.codex-plugin/plugin.json) bundles the same skill with the published `auravms-mcp` npm server.
 
 ## Why AuraVMS underneath
 

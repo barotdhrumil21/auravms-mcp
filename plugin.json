@@ -1,0 +1,21 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "auravms-mcp",
+  "version": "0.1.2",
+  "description": "Guarded AuraVMS procurement workflows for RFQs, suppliers, quotations, reminders, and purchase orders.",
+  "author": {
+    "name": "Dhrumil Barot",
+    "email": "dhrumil@auravms.com",
+    "url": "https://www.auravms.com"
+  },
+  "homepage": "https://www.auravms.com/agents",
+  "repository": "https://github.com/barotdhrumil21/auravms-mcp",
+  "license": "MIT",
+  "keywords": [
+    "procurement",
+    "rfq",
+    "suppliers",
+    "mcp",
+    "agent"
+  ]
+}
