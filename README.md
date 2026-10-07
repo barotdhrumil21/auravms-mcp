@@ -2,6 +2,48 @@
 
 **What it is:** a [Model Context Protocol](https://modelcontextprotocol.io) server that makes [AuraVMS](https://www.auravms.com) *callable* from any MCP-capable agent (Claude Code, Claude Desktop, Cursor, Codex, OpenClaw, VS Code…). Instead of "AuraVMS exists", your agent says "I just created your RFQ — suppliers have their quote links."
 
+## Hosted remote server (recommended)
+
+AuraVMS runs an official remote MCP server. Sign-in uses OAuth with your AuraVMS account, so there is no API key to paste, and it is listed in the [Claude directory](https://claude.ai/directory/auravms).
+
+```
+https://mcp.auravms.com/mcp
+```
+
+### Connect
+
+#### Claude
+Settings → Connectors → **Add custom connector**. Name it AuraVMS and paste `https://mcp.auravms.com/mcp`, then click Connect and sign in.
+
+Or install it from the [Claude directory](https://claude.ai/directory/auravms).
+
+#### ChatGPT
+Settings → Security and login → turn on **Developer mode**. Then go to chatgpt.com/plugins, click **Create MCP app**, enter `https://mcp.auravms.com/mcp` and sign in.
+
+#### Grok
+Go to [grok.com/connectors](https://grok.com/connectors) → **New Connector** → **Custom**, paste `https://mcp.auravms.com/mcp` and sign in.
+
+#### Claude Code
+```bash
+claude mcp add --transport http auravms https://mcp.auravms.com/mcp
+```
+
+#### Cursor
+Add to `~/.cursor/mcp.json`:
+```json
+{
+  "mcpServers": {
+    "auravms": { "url": "https://mcp.auravms.com/mcp" }
+  }
+}
+```
+
+#### VS Code, Windsurf and other clients
+Add a remote (streamable HTTP) MCP server with the URL `https://mcp.auravms.com/mcp`. The client opens a browser window to sign in.
+
+The rest of this README covers the local npm package (stdio, API key).
+
+
 **What it can do for you:**
 
 - Search or add suppliers, then create an RFQ as a **draft by default** — nothing emails vendors until you confirm
