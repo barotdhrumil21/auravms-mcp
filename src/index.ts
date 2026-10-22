@@ -32,6 +32,16 @@ if (!API_KEY) {
 // Tiny API client: Bearer auth, {success,error} envelope, 429 backoff.
 // ---------------------------------------------------------------------------
 
+const MEMBERSHIP_URL = "https://app.auravms.com/membership";
+const PAYMENT_REQUIRED_TEXT =
+  "PAYMENT_REQUIRED: This AuraVMS workspace's free trial has ended or its subscription has lapsed, so it has no active plan. " +
+  "The user needs to subscribe and pay to continue using AuraVMS. Nothing was done.\n\n" +
+  `Give the user this link to choose a plan and pay: ${MEMBERSHIP_URL}\n\n` +
+  "Don't try other AuraVMS tools to get around this; they need a subscription too. Once the user says they have paid, try again.";
+const RESTRICTED_TO_WEB_APP = (path: string) =>
+  `403 Forbidden on ${path}. This endpoint is restricted to the web app ` +
+  `(org settings, billing, supplier-side submission, etc.) — do not retry via API key.`;
+
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 async function api(
@@ -60,20 +70,19 @@ async function api(
       continue;
     }
 
-    if (res.status === 403) {
-      throw new Error(
-        `403 Forbidden on ${path}. This endpoint is restricted to the web app ` +
-          `(org settings, billing, supplier-side submission, etc.) — do not retry via API key.`
-      );
-    }
-
     let data: any;
     const text = await res.text();
     try {
       data = JSON.parse(text);
     } catch {
+      if (res.status === 403) throw new Error(RESTRICTED_TO_WEB_APP(path));
       throw new Error(`AuraVMS API returned non-JSON (HTTP ${res.status}): ${text.slice(0, 300)}`);
     }
+
+    // The API answers 403 { subscription_expired: true } to every call once the
+    // free trial (plus grace) or the paid plan has ended.
+    if (res.status === 403 && data?.subscription_expired) throw new Error(PAYMENT_REQUIRED_TEXT);
+    if (res.status === 403) throw new Error(RESTRICTED_TO_WEB_APP(path));
 
     if (!res.ok || data?.success === false) {
       throw new Error(
