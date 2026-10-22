@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "auravms-mcp",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Guarded AuraVMS procurement workflows for RFQs, suppliers, quotations, reminders, and purchase orders.",
   "author": {
     "name": "Dhrumil Barot",

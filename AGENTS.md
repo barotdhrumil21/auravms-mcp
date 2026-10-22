@@ -2,26 +2,24 @@
 
 ## Scope
 
-This repository publishes the `auravms-mcp` stdio server. It maps agent tool calls to the authenticated AuraVMS procurement API at `https://api.auravms.com`.
+This repository publishes the `auravms-mcp` stdio package: a relay from stdio to the AuraVMS MCP server at `https://mcp.auravms.com/mcp` (vms-frontend `mcp-gateway/`), authenticated with the user's API key. Tools are implemented and changed in the gateway, not here.
 
 ## Validate changes
 
 - Run `npm install` when dependencies change.
-- Run `npm run build` before committing TypeScript or package changes.
-- Keep `README.md`, `server.json`, package metadata, and tool descriptions aligned with the implementation.
+- Run `npm run build` and `npm test` before committing TypeScript or package changes. With a vms-frontend checkout, also run `MCP_GATEWAY_DIR=<vms-frontend>/mcp-gateway npm test`.
+- Keep `README.md`, `server.json` and package metadata aligned with the implementation and the gateway's tools.
 
 ## Product invariants
 
-- Keep `create_rfq` draft-first. Sending an RFQ must require an explicit `send: true` after user confirmation.
-- Keep `place_order` gated by `confirm: true`; it creates a purchase commitment and emails a supplier.
-- Keep supplier reminders throttled and require confirmation before contacting external recipients.
+- The relay passes messages through unchanged: it adds no tools and rewrites no results, so stdio users get exactly what Claude and ChatGPT connector users get.
+- Product rules (draft-first RFQs, destructive annotations on tools that email suppliers or commit purchases, the reminder throttle, PAYMENT_REQUIRED texts) live in the gateway.
 - Prefer read-only lookups before mutations, and never guess supplier, RFQ, item, response, quantity, price, or delivery identifiers.
-- Preserve structured errors and 429 backoff so agents can stop or retry safely.
 
 ## Security
 
 - Never commit API keys, JWTs, supplier links, quotation data, or captured API responses.
-- Send `AVMS_API_KEY` only to `https://api.auravms.com`, unless a user explicitly configures `AVMS_BASE_URL` for an authorized environment.
+- Send `AVMS_API_KEY` only to `https://mcp.auravms.com/mcp`, unless a user explicitly configures `AURAVMS_MCP_URL` for an authorized environment.
 - Do not broaden access to organization settings, billing, user administration, bulk import, or supplier-side quote submission.
 
 ## Canonical references
