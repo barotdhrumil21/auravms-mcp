@@ -33,11 +33,36 @@ if (!API_KEY) {
 // ---------------------------------------------------------------------------
 
 const MEMBERSHIP_URL = "https://app.auravms.com/membership";
-const PAYMENT_REQUIRED_TEXT =
+const paymentRequiredText = (checkoutLine: string) =>
   "PAYMENT_REQUIRED: This AuraVMS workspace's free trial has ended or its subscription has lapsed, so it has no active plan. " +
   "The user needs to subscribe and pay to continue using AuraVMS. Nothing was done.\n\n" +
-  `Give the user this link to choose a plan and pay: ${MEMBERSHIP_URL}\n\n` +
+  `${checkoutLine}\n\n` +
   "Don't try other AuraVMS tools to get around this; they need a subscription too. Once the user says they have paid, try again.";
+
+// A freshly created checkout for the key's workspace (POST /api/connector/checkout-link/, the standard
+// Team checkout with the /pay page's defaults). Falls back to the membership page, with a warning on
+// stderr, if it can't be created.
+async function checkoutLine(): Promise<string> {
+  try {
+    const res = await fetch(`${BASE_URL}/api/connector/checkout-link/`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${API_KEY}`, "Content-Type": "application/json" },
+      body: "{}",
+    });
+    const data: any = await res.json().catch(() => null);
+    const c = data?.data;
+    if (res.ok && typeof c?.checkout_url === "string" && c.checkout_url.startsWith("https://")) {
+      const dollars = (cents: number) => `$${cents / 100}`;
+      const period = c.billing_cycle === "annual" ? "year" : "month";
+      const seats = `${c.seats} seat${c.seats === 1 ? "" : "s"}`;
+      return `Give the user this link to subscribe (${c.plan_name} plan, ${dollars(c.seat_price_cents)} per seat per ${period}, ${seats}, ${dollars(c.due_today_cents)} due today): ${c.checkout_url}`;
+    }
+    console.error(`auravms-mcp: checkout link not created (HTTP ${res.status}); falling back to the membership page`);
+  } catch (error) {
+    console.error(`auravms-mcp: checkout link not created (${(error as Error).message}); falling back to the membership page`);
+  }
+  return `Give the user this link to choose a plan and pay: ${MEMBERSHIP_URL}`;
+}
 const RESTRICTED_TO_WEB_APP = (path: string) =>
   `403 Forbidden on ${path}. This endpoint is restricted to the web app ` +
   `(org settings, billing, supplier-side submission, etc.) — do not retry via API key.`;
@@ -81,7 +106,7 @@ async function api(
 
     // The API answers 403 { subscription_expired: true } to every call once the
     // free trial (plus grace) or the paid plan has ended.
-    if (res.status === 403 && data?.subscription_expired) throw new Error(PAYMENT_REQUIRED_TEXT);
+    if (res.status === 403 && data?.subscription_expired) throw new Error(paymentRequiredText(await checkoutLine()));
     if (res.status === 403) throw new Error(RESTRICTED_TO_WEB_APP(path));
 
     if (!res.ok || data?.success === false) {
